@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css">
+</head>
+
+<body>
+  <div class="py-5 h-100" style="background-image: url('https://static.pingendo.com/cover-bubble-dark.svg'); background-position: right bottom; background-size: cover; background-repeat: repeat; background-attachment: fixed;">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12"><a class="btn btn-primary" href="login"><i class="fa fa-user fa-fw"></i>登出</a></div>
+      </div>
+      <div class="row">
+        <div class="mx-auto col-md-8 text-center">
+          <h1>智简销售管理</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6 col-6 p-3"><a class="btn btn-secondary btn-lg align-items-center justify-content-center d-flex" href="product">商品管理</a></div>
+        <div class="col-lg-6 col-6 p-3">
+          <a class="btn btn-secondary btn-lg align-items-center justify-content-center d-flex" href="billList">账单管理</a>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row align-items-end justify-content-end">
+        <div class="col-lg-2 col-6 p-3 align-items-end justify-content-end d-flex" style=""></div>
+        <div class="col-lg-2 col-6 p-3 align-items-end justify-content-end d-flex" style=""></div>
+        <div class="col-lg-2 col-6 p-3 align-items-end justify-content-end d-flex" style=""></div>
+        <div class="align-items-end justify-content-end d-flex col-lg-2 col-2 p-1" style="">
+          <form class="form-inline" id="frm" method="post">
+            <div class="input-group">
+              <input type="text" class="form-control" name="proid">
+              <div class="input-group-append"><button class="btn btn-primary" type="button" onclick="document.getElementById('frm').submit()">查询</button></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-lg-2 col-6 p-3 align-items-end justify-content-end d-flex" style=""><a class="btn btn-primary"  href="add">添加商品信息</a></div>
+      </div>
+    </div>
+    <div class="container">
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="table-responsive text-body">
+            <table class="table table-bordered ">
+              <thead class="thead-dark">
+                <tr>
+                  <th>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;图片</th>
+                  <th>商品ID</th>
+                  <th contenteditable="true">&nbsp; &nbsp; &nbsp; &nbsp; 名称</th>
+                  <th contenteditable="true">&nbsp; 种类</th>
+                  <th>库存数量</th>
+                  <th>单价</th>
+                  <th>生产日期</th>
+                  <th>保质日期</th>
+                    <th>货架位置</th>
+                  <th contenteditable="true">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;操作</th>
+                </tr>
+              </thead>
+              <tbody>
+
+               {% for i in result %}
+                    <tr>
+                        <form id={{ i[0] }} name="myfrm" method="post">
+                            <td><img src={{ i[2] }} id="myImg"  style="width: 70px;height:70px ;" /></td>
+                            <td>{{ i[0] }}</td><input type="hidden" name="pid" value={{ i[0] }}></td>
+                            <td>{{ i[1] }}</td>
+                            <td>{{ i[3] }}</td>
+                            <td>{{ i[4] }}</td>
+                            <td>{{ i[5] }}</td>
+                            <td>{{ i[6] }}</td>
+                            <td>{{ i[7] }}</td>
+                            <td>{{ i[8] }}</td>
+                            <td ><a class="btn btn-primary" onclick="document.getElementById({{ i[0] }}).submit()">修改/查看</a></td>
+                        </form>
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="../static/jquery.js"></script>
+  <script src="../static/js.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <pingendo onclick="window.open('https://pingendo.com/', '_blank')" style="cursor:pointer;position: fixed;bottom: 20px;right:20px;padding:4px;background-color: #00b0eb;border-radius: 8px; width:220px;display:flex;flex-direction:row;align-items:center;justify-content:center;font-size:14px;color:white">Made with Pingendo Free&nbsp;&nbsp;<img src="https://pingendo.com/site-assets/Pingendo_logo_big.png" class="d-block" alt="Pingendo logo" height="16"></pingendo>
+</body>
+
+</html>
