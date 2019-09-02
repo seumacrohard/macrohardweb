@@ -49,7 +49,9 @@
             </table>
           </div>
         </div>
-            <div  id ='main' style="width: 800px;height: 500px"></div>
+          <div class="chart">
+            <div  id ='main' style="width: 800px;height: 600px"></div>
+          </div>
         <div class="col-md-3">
           <div class="table-responsive text-body">
             <table class="table table-bordered ">
@@ -101,6 +103,7 @@
 
   </div>
   <script>
+
    ec = echarts.init(
         document.getElementById("main"))
         typeData=[]
@@ -121,20 +124,41 @@
             xAxis: {
                 data:typeData,
                 axisLabel:{
-                    interval:0
+                    interval:0,
+                    rotate:45,
+                    textStyle:{
+                        fontWeight:"bolder",
+                        color: "#000000"
+                    }
                 }
             },
+            grid:{
+                        left:"10%",
+                        bottom: "35%"
+                    },
             yAxis: {
                 type: 'value'
             },
             series: [{
                 data: numberData,
-                type: 'bar'
+                type: 'bar',
+                itemStyle:{
+                    normal:{
+                        label:{
+                            show:true,
+                            textStyle:{
+                                fontWeight:"bolder",
+                                fontsize:'12',
+                                fontFamily:'微软雅黑'
+                    }
+                        }
+                    }
+                }
             }]
 
        };
 
-    ec.setOption(option)
+    ec.setOption(option);
     }
 
 
