@@ -3,12 +3,12 @@ import os
 from flask import Flask, render_template, request, session, redirect, url_for, json
 from MhDatabses import MhDatabases
 from mhHot import mhHot
+from mhitemCF import  mhitemCF
 
 app = Flask(__name__)
 
 app.secret_key = 'test' # 设置secret_key
 
-db=MhDatabases() # 连接数据库
 
 # 函数login_required
 # 作用：管理员登录验证
@@ -74,6 +74,7 @@ def login():
 @app.route('/billList', methods=['GET', 'POST'])
 @login_required
 def billList():
+    db = MhDatabases()
     if request.method == 'GET':
 
         result = db.executeQuery("select image,gid,name ,sort,uprice,sum(number),sum(total) from pcr group by name") # 从数据库中查询账单记录并返回
@@ -103,6 +104,7 @@ def billList():
 @app.route('/product', methods=['GET', 'POST'])
 @login_required
 def product():
+    db = MhDatabases()
     if request.method == 'GET':
         result = db.executeQuery("select * from goods") # 从数据库中查询商品记录并返回
         return render_template("product.html",result=result)
@@ -126,6 +128,7 @@ def product():
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
+    db = MhDatabases()
     if request.method == 'GET':
         return render_template("add.html")
     else:
@@ -162,7 +165,9 @@ def add():
 @app.route('/update?<string:pid>', methods=['GET', 'POST'])
 @login_required
 def update(pid):
+    db = MhDatabases()
     if request.method == 'GET':
+
         result = db.executeQuery("select * from goods where gid=%s",[pid]) # 从数据库获取商品信息并返回
         return render_template("update.html",result=result)
     else:
@@ -190,6 +195,7 @@ def update(pid):
 @app.route("/showEcharts",methods=["GET","POST"])
 @login_required
 def showEcharts():
+    db = MhDatabases()
     #从数据库中查询数据---生成Json格式
     result=db.executeQuery("select name,sum(number) from pcr group by name ")
 
@@ -220,7 +226,7 @@ def showEchart():
 # 完成时间：2019/08/28
 @app.route('/userregister',methods=['GET','POST'])
 def userregister():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的注册用户的id，password，name，sex
     id = str(json.loads(request.values.get("id")))
     password=str(json.loads(request.values.get("password")))
@@ -244,7 +250,7 @@ def userregister():
 # 完成时间：2019/08/28
 @app.route('/userlogin',methods=['GET','POST'])
 def userlogin():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的id和password
     id = str(json.loads(request.values.get("id")))
     password=str(json.loads(request.values.get("password")))
@@ -272,7 +278,7 @@ def userlogin():
 # 完成时间：2019/08/28
 @app.route('/allorders',methods=['GET','POST'])
 def allorders():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的ID
     id = str(json.loads(request.values.get("id")))
     print("id",id)
@@ -302,9 +308,10 @@ def allorders():
                         a[column[2]] = int(result[i][2])
                         a[column[1]] = result[i][3]
                         a[column[4]] = "http://139.217.130.233/"+result[i][4]
-                        totalprice[t]+=float(result[i][2]*result[i][3])
+                        totalprice[t]+=float(result[i][2])*result[i][3]
                         total.append(a)
             total2.append(total)
+            total=[]
         res=[]
         for i in range(0,len(total2)):
             order={"orders":total2[i],"time":timess[i],"totalprice":totalprice[i]}
@@ -324,14 +331,14 @@ def allorders():
 # 完成时间：2019/08/28
 @app.route('/deleteorders',methods=['GET','POST'])
 def deleteorders():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的ID和订单完成时间
     id = str(json.loads(request.values.get("id")))
     time = str(json.loads(request.values.get("times")))
     print("id",id," time",time)
 
     # 根据ID和订单完成时间修改该订单在数据库中的isdelete项
-    result=db.executeUpdate("update pcr set isdelete=true where buyerid=%s and time=%s and optype=10",[id,time])
+    result=db.executeUpdate("update pcr set isdelete=true where buyerid=%s and time=%s and optype=10 ",[id,time])
 
     # 返回删除的结果:
     if result==1:
@@ -348,14 +355,14 @@ def deleteorders():
 # 完成时间：2019/08/28
 @app.route('/orderdetail',methods=['GET','POST'])
 def ordersdetail():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的ID和订单完成时间
     id = str(json.loads(request.values.get("id")))
     time = str(json.loads(request.values.get("time")))
     print("id",id," time",time)
 
     # 根据ID和订单完成时间查询在数据库中的数据
-    result = db.executeQuery("select gid,name,number,uprice,total,image from pcr where buyerid=%s and time=%s and isdelete=0 and optype=10",[id,time])
+    result = db.executeQuery("select gid,name,sum(number),uprice,image from pcr where buyerid=%s and time=%s and isdelete=0 and optype=10 group by name",[id,time])
 
     # 返回查询的结果:
     if len(result)!=0:
@@ -365,10 +372,10 @@ def ordersdetail():
             dict={}
             dict['gid']=i[0]
             dict['name']=i[1]
-            dict['number']=i[2]
+            dict['number']=int(i[2])
             dict['uprice']=i[3]
-            dict['total']=i[4]
-            dict['image'] =  "http://139.217.130.233/"+i[5]
+            dict['total']=float(i[2])*i[3]
+            dict['image'] =  "http://139.217.130.233/"+i[4]
             list.append(dict)
         res={"orders":list}
     else:
@@ -382,7 +389,7 @@ def ordersdetail():
 # 完成时间：2019/08/29
 @app.route('/shoppingcart',methods=['GET','POST'])
 def shoppingcart():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的用户id
     id = str(json.loads(request.values.get("id")))
     print(id)
@@ -414,7 +421,7 @@ def shoppingcart():
 # 完成时间：2019/08/29
 @app.route('/cartsettle',methods=['GET','POST'])
 def cartsettle():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的商品id，订单时间，结算商品数组
     id = str(json.loads(request.values.get("id")))
     time = str(json.loads(request.values.get("time")))
@@ -456,7 +463,7 @@ def cartsettle():
 # 完成时间：2019/08/29
 @app.route('/cartdelete',methods=['GET','POST'])
 def cartdelete():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的商品id，删除商品数组
     id = str(json.loads(request.values.get("id")))
     scart=json.loads(request.values.get("scart"))
@@ -471,7 +478,7 @@ def cartdelete():
 # 完成时间：2019/08/29
 @app.route('/cartadd',methods=['GET','POST'])
 def cartadd():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的用户id，商品信息
     id = str(json.loads(request.values.get("id")))
     gid = str(json.loads(request.values.get("gid")))
@@ -510,7 +517,7 @@ def cartadd():
 # 完成时间：2019/09/2
 @app.route('/goodsdetail',methods=['GET','POST'])
 def goodsdetail():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的商品id
     gid = str(json.loads(request.values.get("gid")))
     print(gid)
@@ -538,14 +545,14 @@ def goodsdetail():
 # 完成时间：2019/09/2
 @app.route('/hotmain',methods=['GET','POST'])
 def hotmain():
-
+    db = MhDatabases()
     # 获取微信小程序端传来的用户id
     id = str(json.loads(request.values.get("id")))
     print(id)
 
     res = []
     h = mhHot()
-    hot = h.hot(h.getPcr(), 3) # 获取当月热销前三的商品名称和销量
+    hot = h.hot(h.getPcr(), 10) # 获取当月热销前三的商品名称和销量
     if len(hot)==0:
         res="暂无商品"
     else:
@@ -560,12 +567,42 @@ def hotmain():
             res.append(dict)
     return json.dumps(res)
 
+# 函数recommendmain
+# 作用：微信小程序用户主界面热销商品路由，获取用户发送的id，根据商品销量返回当月热销商品
+# 作者：王明
+# 完成时间：2019/09/2
+@app.route('/recommendmain',methods=['GET','POST'])
+def recommendmain():
+    db = MhDatabases()
+    # 获取微信小程序端传来的用户id
+    id = str(json.loads(request.values.get("id")))
+    print(id)
+
+    res=[]
+    mh = mhitemCF()
+    data = mh.getUidScoreBid()  # 获得数据
+    W = mh.similarity(data);  # 算物品相似矩阵
+    relist=mh.recommandList(data, W, id, 10, 10);  # 推荐
+    if len(relist)==0:
+        res="暂无推荐"
+    else:
+        for i in relist:
+            result = db.executeQuery("select gid,name,image,uprice from goods where name=%s", [i[0]])  # 获取推荐商品详细信息
+            dict = {}
+            dict['gid'] = result[0][0]
+            dict['name'] = result[0][1]
+            dict['image'] = "http://139.217.130.233/" + result[0][2]
+            dict['uprice'] = result[0][3]
+            res.append(dict)
+    return json.dumps(res)
+
 # 函数idcodelogin
 # 作用：微信小程序用户验证码登录路由，获取用户发送的id，查询是否存在，如果不存在添加记录
 # 作者：王明
 # 完成时间：2019/09/2
 @app.route('/idcodelogin',methods=['GET','POST'])
 def idcodelogin():
+    db = MhDatabases()
     # 获取微信小程序端传来的用户id
     id = str(json.loads(request.values.get("id")))
     print(id)
@@ -581,6 +618,7 @@ def idcodelogin():
 # 完成时间：2019/09/2
 @app.route('/mine',methods=['GET','POST'])
 def mine():
+    db = MhDatabases()
     # 获取微信小程序端传来的用户id
     id = str(json.loads(request.values.get("id")))
     print(id)
@@ -600,6 +638,7 @@ def mine():
 # 完成时间：2019/09/2
 @app.route('/updatemine',methods=['GET','POST'])
 def updatemine():
+    db = MhDatabases()
     # 获取微信小程序端传来的用户修改信息
     name = str(json.loads(request.values.get("name")))
     sex = str(json.loads(request.values.get("sex")))
