@@ -278,53 +278,31 @@ def allorders():
     print("id",id)
 
     # 根据ID在数据库中查询用户订单数据
-    result=db.executeQuery("select gid,name,number,uprice,total,image,time from pcr where optype=10 and isdelete=0 and buyerid=%s",[id])
+    result = db.executeQuery("select gid,name,number,uprice,total,image,time from pcr where optype=10 and isdelete=0 and buyerid=%s",[id])
+    timeresult = db.executeQuery("select time from pcr where optype=10 and isdelete=0 and buyerid=%s group by time", [id])
     column=['gid','name','number','uprice','total','image','time']
     print(result)
-
+    timess=[]
+    for i in timeresult:
+        timess.append(i[0])
     # 返回查询到的结果:
     # 如果有订单，按时间整合订单信息，转为json格式发送给微信小程序端订单的详细信息
-    if len(result)!=0:
-        time=result[0][6]
+    if len(result)!=0 :
         total=[]
         total2=[]
         totalprice=[]
-        for i in range(0,len(result)):
+        for i in range(0,len(timeresult)):
             totalprice.append(0)
-        timess=[]
-        timess.append(time)
-        k=0
-        for i in range(0,len(result)):
-            n=i+1
-
-            if n<len(result):
-                if result[i][6]==time and result[n][6]==time:
-                    a={}
-                    for j in range(0,4):
-                        a[column[j]]=result[i][j]
-                    a[column[5]] = "http://139.217.130.233/"+result[i][5]
-                    totalprice[k]+=result[i][4]
-                    total.append(a)
-                if result[i][6]==time and result[n][6]!=time:
-                    time=result[n][6]
-                    timess.append(time)
-                    totalprice[k]+=result[i][4]
-                    a = {}
-                    for j in range(0,4):
-                        a[column[j]] = result[i][j]
-                    a[column[5]] = "http://139.217.130.233/" + result[i][5]
-                    total.append(a)
-                    total2.append(total)
-                    total=[]
-                    k=k+1
-            else:
-                totalprice[k] += result[i][4]
-                a = {}
-                for j in range(0,4):
-                    a[column[j]] = result[i][j]
-                a[column[5]] = "http://139.217.130.233/" + result[i][5]
-                total.append(a)
-                total2.append(total)
+        for t in range(0,len(timess)):
+            for i in range(0,len(result)):
+                    if result[i][6]==t :
+                        a={}
+                        for j in range(0,4):
+                            a[column[j]]=result[i][j]
+                        a[column[5]] = "http://139.217.130.233/"+result[i][5]
+                        totalprice[t]+=result[i][4]
+                        total.append(a)
+            total2.append(total)
         res=[]
         for i in range(0,len(total2)):
             order={"orders":total2[i],"time":timess[i],"totalprice":totalprice[i]}
@@ -407,20 +385,20 @@ def shoppingcart():
     id = str(json.loads(request.values.get("id")))
     print(id)
 
-    result=db.executeQuery("select image,gid,name,gnumber,number,uprice ,time from pcr where buyerid=%s and isdelete=0 and optype=5",[id])
+    result=db.executeQuery("select image,gid,name,sum(number),uprice  from pcr where buyerid=%s and isdelete=0 and optype=5 group by name",[id])
     # 返回查询的结果:
     if len(result) != 0:
         res = []
 
         for i in result:
             dict = {}
+            result1=db.executeQuery("select number from goods where gid=%s ",[i[1]])
             dict['imgSrc'] = "http://139.217.130.233/"+i[0]
             dict['title'] = i[2]
             dict['gid'] = i[1]
-            dict['price'] = i[5]
-            dict['quantity'] = i[4]
-            dict['max']=i[3]
-            dict['time']=i[6]
+            dict['price'] = i[4]
+            dict['quantity'] = int(i[3])
+            dict['max']=result1[0][0]
             res.append(dict)
     else:
         res = "空"
@@ -449,7 +427,7 @@ def cartsettle():
             order.append( i['gid']) # gid
             order.append(result[0][0]) # name
             order.append(result[0][2]) # sort
-            order.append(result[0][3]-int(i['quantity'])) # gnumber
+            gnumber=result[0][3]-int(i['quantity']) # gnumber
             order.append( int(i['quantity'])) # number
             order.append(float(i['price'])) # uprice
             order.append(int(i['quantity'])*float(i['price'])) # total
@@ -457,12 +435,16 @@ def cartsettle():
             order.append(id) # buyerid
             order.append(10) # optype
             order.append(0) # isdelete
-            db.executeUpdate("update goods set number=%s where gid=%s",[order[4],order[1]]) # 修改商品库存
-            db.executeUpdate("update pcr set isdelete=1 where gid=%s and buyerid=%s and optype=5", [order[1],order[9]]) # 修改加入购物车订单isdelete项
-            db.executeUpdate("insert into pcr values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", order) # 添加购买记录
+            if gnumber<0:
+                res="库存不足"
+            else:
+                db.executeUpdate("update goods set number=%s where gid=%s",[gnumber,order[1]]) # 修改商品库存
+                db.executeUpdate("update pcr set isdelete=1 where gid=%s and buyerid=%s and optype=5", [order[1],order[8]]) # 修改加入购物车订单isdelete项
+                db.executeUpdate("insert into pcr values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", order) # 添加购买记录
+                res="结算成功"
         else:
-            res="结算"
-    res="结算成功"
+            res="结算失败"
+
     return json.dumps(res)
 
 
@@ -493,28 +475,30 @@ def cartadd():
     gid = str(json.loads(request.values.get("gid")))
     quantity = int(json.loads(request.values.get("quantity")))
     time = str(json.loads(request.values.get("time")))
-    result=db.executeQuery("select image,name,sort,number,uprice from goods where gid=%s",[gid]) # 获取商品在数据库中的详细信息
+    result=db.executeQuery("select image,name,sort,uprice,number from goods where gid=%s",[gid]) # 获取商品在数据库中的详细信息
     print(result)
 
-    order=[]
-    price=result[0][4]
-    order.append(result[0][0])
-    order.append(gid)
-    order.append(result[0][1])
-    order.append(result[0][2])
-    order.append(result[0][3])
-    order.append(quantity)
-    order.append(price)
-    order.append(quantity*price)
-    order.append(time)
-    order.append(id)
-    order.append(5)
-    order.append(0)
-    r=db.executeUpdate("insert into pcr values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", order) # 添加加入购物车记录
-    if r==1:
-        res="添加成功"
+    if result[0][4]-quantity<0:
+        res="库存不足"
     else:
-        res="添加失败"
+        order=[]
+        price=result[0][3]
+        order.append(result[0][0])
+        order.append(gid)
+        order.append(result[0][1])
+        order.append(result[0][2])
+        order.append(quantity)
+        order.append(price)
+        order.append(quantity*price)
+        order.append(time)
+        order.append(id)
+        order.append(5)
+        order.append(0)
+        r=db.executeUpdate("insert into pcr values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", order) # 添加加入购物车记录
+        if r==1:
+            res="添加成功"
+        else:
+            res="添加失败"
     return json.dumps(res)
 
 
