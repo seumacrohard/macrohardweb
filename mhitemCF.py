@@ -94,9 +94,8 @@ class mhitemCF:
 	    rank={};
 	    for i,score in data[user].items():# 获得用户user历史记录，如A用户的历史记录为{'a': '1', 'b': '1', 'd': '1'}
 	        for j,w in sorted(W[i].items(),key=operator.itemgetter(1),reverse=True)[0:k]:#获得与物品i相似的k个物品
-	            if j not in data[user].keys():# 该相似的物品不在用户user的记录里
-	                rank.setdefault(j,0);
-	                rank[j]+=float(score) * w;
+	            rank.setdefault(j,0);
+	            rank[j]+=float(score) * w;
 
 	    print("---4.推荐----")
 	    pprint.pprint(sorted(rank.items(),key=operator.itemgetter(1),reverse=True)[0:N])
