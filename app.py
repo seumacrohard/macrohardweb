@@ -278,9 +278,9 @@ def allorders():
     print("id",id)
 
     # 根据ID在数据库中查询用户订单数据
-    result = db.executeQuery("select gid,name,number,uprice,total,image,time from pcr where optype=10 and isdelete=0 and buyerid=%s",[id])
+    result = db.executeQuery("select gid,name,sum(number),uprice,image,time from pcr where optype=10 and isdelete=0 and buyerid=%s group by name,time",[id])
     timeresult = db.executeQuery("select time from pcr where optype=10 and isdelete=0 and buyerid=%s group by time", [id])
-    column=['gid','name','number','uprice','total','image','time']
+    column=['gid','name','number','uprice','image']
     print(result)
     timess=[]
     for i in timeresult:
@@ -295,12 +295,14 @@ def allorders():
             totalprice.append(0)
         for t in range(0,len(timess)):
             for i in range(0,len(result)):
-                    if result[i][6]==t :
+                    if result[i][5]==timess[t] :
                         a={}
-                        for j in range(0,4):
-                            a[column[j]]=result[i][j]
-                        a[column[5]] = "http://139.217.130.233/"+result[i][5]
-                        totalprice[t]+=result[i][4]
+                        a[column[0]]=result[i][0]
+                        a[column[1]] = result[i][1]
+                        a[column[2]] = int(result[i][2])
+                        a[column[1]] = result[i][3]
+                        a[column[4]] = "http://139.217.130.233/"+result[i][4]
+                        totalprice[t]+=float(result[i][2]*result[i][3])
                         total.append(a)
             total2.append(total)
         res=[]
