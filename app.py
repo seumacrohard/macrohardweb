@@ -341,10 +341,10 @@ def deleteorders():
     result=db.executeUpdate("update pcr set isdelete=true where buyerid=%s and time=%s and optype=10 ",[id,time])
 
     # 返回删除的结果:
-    if result==1:
-        res="删除成功"
-    else:
+    if result==0:
         res="删除失败"
+    else:
+        res="删除成功"
     return json.dumps(res)
 
 
@@ -645,10 +645,10 @@ def updatemine():
     id = str(json.loads(request.values.get("id")))
     password = str(json.loads(request.values.get("password")))
     result=db.executeUpdate("update user set pwd=%s,gender=%s,name=%s where phone=%s",[password,sex,name,id]) # 修改用户在数据库中的个人信息记录
-    if result==1:
-        res="修改成功"
-    else:
+    if result==0:
         res="修改失败"
+    else:
+        res="修改成功"
     return json.dumps(res)
 
 if __name__ == '__main__':
