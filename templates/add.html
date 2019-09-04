@@ -21,7 +21,7 @@
   <div class="py-5 h-100" style="background-image: url('https://static.pingendo.com/cover-bubble-dark.svg'); background-position: right bottom; background-size: cover; background-repeat: repeat; background-attachment: fixed;">
     <div class="container">
       <div class="row">
-        <div class="col-md-12"><a class="btn btn-primary" href="#"><i class="fa fa-user fa-fw"></i>登出</a></div>
+        <div class="col-md-12"><a class="btn btn-primary" href="login"><i class="fa fa-user fa-fw"></i>登出</a></div>
       </div>
       <div class="row">
         <div class="mx-auto col-md-8 text-center">
@@ -39,7 +39,7 @@
         <div class="col-lg-3 col-6 p-3"></div>
         <div class="col-lg-3 col-6 p-3"></div>
         <div class="col-lg-3 col-6 p-3">
-            <input class="btn align-items-center justify-content-center d-flex btn-lg btn-primary" id="btnadd" type="button" value="添加" />
+            <input class="btn align-items-center justify-content-center d-flex btn-lg btn-primary" id="btnadd" type="button" value="添加" onclick="addgood()"/>
         </div>
       </div>
       <div class="row">
@@ -77,7 +77,7 @@
                   <th scope="row" class="text-center">库存管理</th>
                   <td>
 
-                      <div class="form-group"> <input type="text" class="form-control" name="number" id="number"> </div>
+                      <div class="form-group"> <input type="text" class="form-control" name="number" id="number"></div>
 
                   </td>
                 </tr>
@@ -130,7 +130,83 @@
   </div>
   <div class="py-5 h-100 justify-content-center" style="background-image: url('https://static.pingendo.com/cover-bubble-dark.svg'); background-position: right bottom; background-size: cover; background-repeat: repeat; background-attachment: fixed;"></div>
   <script src="../static/jquery.js"></script>
-  <script src="../static/js.js"></script>
+  <script type="text/javascript">
+
+      function addgood() {
+            var reg1=/^[1-9]\d*$|^0$/;
+            var reg2=/^\d+(\.\d+)?$/;
+            var reg3=/[a-z]+[1-9]*$/;
+            var proID=$("input[name='productId']").val();
+            var proName=$("input[name='productName']").val();
+            var ptype=$("input[name='type']").val();
+            var pnumber=$("input[name='number']").val();
+            var pprice=$("input[name='price']").val();
+            var pdateofproduce=$("input[name='dateofproduce']").val();
+            var pdateofbad=$("input[name='dateofbad']").val();
+            var location=$("input[name='location']").val();
+            var file=$("#myFile").val();
+            if(proID==''||proID=='undefined'||proID==null){
+                alert("请输入商品ID");
+            }
+            else if(proName==''||proName==undefined||proName==null){
+                alert("请输入商品名称");
+            }
+            else if(ptype==''||ptype==undefined||ptype==null){
+                alert("请输入商品种类");
+            }
+            else if(pnumber==''||pnumber==undefined||pnumber==null){
+                alert("请输入商品库存数量");
+            }
+            else if(!reg1.test(pnumber)){
+                alert("库存请输入整数");
+            }
+            else if(!reg2.test(pprice)){
+                alert("单价请输入数字");
+            }
+            else if( pprice==''||pprice==undefined||pprice==null){
+                alert("请输入商品单价");
+            }
+            else if(pdateofproduce==''||pdateofproduce==undefined||pdateofproduce==null){
+                alert("请输入商品生产日期");
+            }
+            else if(pdateofbad==''||pdateofbad==undefined||pdateofbad==null){
+                alert("请输入商品保质日期");
+            }
+            else if(location==''||location==undefined||location==null){
+                alert("请输入商品货架位置");
+            }
+            else if(!reg3.test(location)){
+                alert("请输入正确的货架位置");
+            }
+            else if(file==''){
+                alert("请添加图片");
+            }
+            else{
+                $('#frm').submit();
+                alert("添加成功")
+            }
+      }
+      var fileObj = "";
+      var imgData = "";
+
+      $("#myFile").change(function () {
+        // 构造一个文件渲染对象
+        var reader = new FileReader();
+        // 得到文件列表数组
+        fileObj = $(this)[0].files[0];
+        // 拿到文件数据
+        reader.readAsDataURL(fileObj);
+
+        reader.onload = function() {
+            // 获取文件信息
+            imgData = reader.result;
+            // 指定位置显示图片
+            $("#myImg").attr("src", imgData);
+
+        };
+      });
+  </script>
+
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous" style=""></script>

@@ -35,9 +35,9 @@ class mhHot:
 		month = str(now.strftime('%m'))
 		for line in result:
 			item = line[2]
-			number = line[5]
-			time = line[8].split('/')
-			optype = line[10]
+			number = line[4]
+			time = line[7].split('/')
+			optype = line[9]
 			data.setdefault(item,0)
 			if item in data:
 				if time[0]==year and time[1] == month and optype == 10:

@@ -43,7 +43,9 @@
               </thead>
               <tbody>
                 <tr style="">
-                  <form class="form-inline"></form>
+                  <form class="form-inline">
+                      <td class="col-lg-6 col-6 p-3"><a class="btn btn-secondary btn-lg align-items-center justify-content-center d-flex" onclick="refresh()" >返回</a></td>
+                  </form>
                 </tr>
               </tbody>
             </table>
@@ -107,64 +109,129 @@
    ec = echarts.init(
         document.getElementById("main"))
         typeData=[]
-        numberData=[]
+        totalData=[]
+        namesData=[]
+        numbersData=[]
+        var option
         $.getJSON("showEcharts",function (res) {
             for(i=0;i<res.result.length;i++){
-                typeData[i] =res.result[i].name
-                numberData[i]=res.result[i].total
+                typeData[i] =res.result[i].sort
+                totalData[i]=res.result[i].total
             }
-            setData()
-    })
-    function setData() {
-        var option={
-            color:['#28FF28'],
-            grid:{
-                left:'2%',right:'2%',bottom:'10%',containLabel:true
-            },
-            xAxis: {
-                data:typeData,
-                axisLabel:{
-                    interval:0,
-                    rotate:45,
-                    textStyle:{
-                        fontWeight:"bolder",
-                        color: "#000000"
-                    }
+            for(i=0;i<res.goodsresult.length;i++){
+                nameData=[]
+                numberData=[]
+                for(j=0;j<res.goodsresult[i].length;j++){
+                    nameData[j] = res.goodsresult[i][j].name
+                    numberData[j]=res.goodsresult[i][j].number
                 }
-            },
-            grid:{
-                        left:"10%",
-                        bottom: "35%"
-                    },
-            yAxis: {
-                type: 'value'
-            },
-            series: [{
-                data: numberData,
-                type: 'bar',
-                itemStyle:{
-                    normal:{
-                        label:{
-                            show:true,
-                            textStyle:{
-                                fontWeight:"bolder",
-                                fontsize:'12',
-                                fontFamily:'微软雅黑'
-                    }
+                namesData[i]=nameData
+                numbersData[i]=numberData
+            }
+            option={
+                color:['#28FF28'],
+                grid:{
+                    left:'2%',right:'2%',bottom:'10%',containLabel:true
+                },
+                xAxis: {
+                    data:typeData,
+                    axisLabel:{
+                        interval:0,
+                        rotate:45,
+                        textStyle:{
+                            fontWeight:"bolder",
+                            color: "#000000"
                         }
                     }
+                },
+                grid:{
+                            left:"10%",
+                            bottom: "35%"
+                        },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: totalData,
+                    type: 'bar',
+                    itemStyle:{
+                        normal:{
+                            label:{
+                                show:true,
+                                textStyle:{
+                                    fontWeight:"bolder",
+                                    fontsize:'12',
+                                    fontFamily:'微软雅黑'
+                        }
+                            }
+                        }
+                    }
+                }]
+
+           };
+            options=[]
+            for(i=0;i<res.goodsresult.length;i++){
+                var op={
+                    color:['#28FF28'],
+                    grid:{
+                        left:'2%',right:'2%',bottom:'10%',containLabel:true
+                    },
+                    xAxis: {
+                        data:namesData[i],
+                        axisLabel:{
+                            interval:0,
+                            rotate:45,
+                            textStyle:{
+                                fontWeight:"bolder",
+                                color: "#000000"
+                            }
+                        }
+                    },
+                    grid:{
+                                left:"10%",
+                                bottom: "35%"
+                            },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        data: numbersData[i],
+                        type: 'bar',
+                        itemStyle:{
+                            normal:{
+                                label:{
+                                    show:true,
+                                    textStyle:{
+                                        fontWeight:"bolder",
+                                        fontsize:'12',
+                                        fontFamily:'微软雅黑'
+                            }
+                                }
+                            }
+                        }
+                    }]
+
+                };
+                option[i]=op
+            }
+            ec.setOption(option);
+            ec.on('click',function (param) {
+                var n=param.name;
+                for(i=0;i<typeData.length;i++){
+                    if(n==typeData[i]){
+                        ec.setOption(option[i]);
+                        break;
+                    }
                 }
-            }]
+            })
+    })
 
-       };
-
-    ec.setOption(option);
-    }
-
+      function refresh(){
+       ec.setOption(option);
+   }
 
 </script>
-  <script src="../static/jquery.js"></script>
-  <script src="../static/js.js"></script>
+
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

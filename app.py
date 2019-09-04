@@ -47,6 +47,7 @@ def login():
         name = request.form.get("username")
         pwd = request.form.get("password")
         session['user_id'] = name
+        session.setm
         print("username:", name)
         print("password:", pwd)
 
@@ -77,7 +78,7 @@ def billList():
     db = MhDatabases()
     if request.method == 'GET':
 
-        result = db.executeQuery("select image,gid,name ,sort,uprice,sum(number),sum(total) from pcr group by name") # 从数据库中查询账单记录并返回
+        result = db.executeQuery("select image,gid,name ,sort,uprice,sum(number),sum(cast(total as decimal(18,1))) from pcr group by name") # 从数据库中查询账单记录并返回
         return render_template("billList.html",result=result)
     else:
 
@@ -85,8 +86,8 @@ def billList():
         print(product)
 
         # 从数据库中查询获取账单记录
-        result1 = db.executeQuery("select image,gid,name ,sort,uprice,sum(number),sum(total) from pcr where gid=%s group by name", [product])
-        result2 = db.executeQuery("select image,gid,name ,sort,uprice,sum(number),sum(total) from pcr where name=%s group by name", [product])
+        result1 = db.executeQuery("select image,gid,name ,sort,uprice,sum(number),sum(cast(total as decimal(18,1))) from pcr where gid=%s group by name", [product])
+        result2 = db.executeQuery("select image,gid,name ,sort,uprice,sum(number),sum(cast(total as decimal(18,1))) from pcr where name=%s group by name", [product])
 
         if len(result1)!=0 :
             result=result1
@@ -115,8 +116,14 @@ def product():
         pid=request.form.get("pid") # 获取web端发送的需要修改/查看的商品ID
         print("pid",pid)
         if proID:
-
-            result = db.executeQuery("select * from goods where gid=%s",[proID]) # 从数据库获取查询的商品信息并返回
+            result1 = db.executeQuery("select * from goods where gid=%s",[proID]) # 从数据库获取查询的商品信息并返回
+            result2 = db.executeQuery("select * from goods where name=%s", [proID])
+            if len(result1) != 0:
+                result = result1
+            elif len(result2) != 0:
+                result = result2
+            else:
+                result = "暂无记录"
             return render_template("product.html",result=result)
         if pid :
             return redirect(url_for('update',pid=pid)) # 跳转到商品修改界面
@@ -182,10 +189,11 @@ def update(pid):
             product.append(request.form.get("type"))
             product.append(int(request.form.get("number")))
             product.append(float(request.form.get("price")))
+            product.append(request.form.get("location"))
             print(product)
 
             # 在数据库中修改商品信息
-            db.executeUpdate("update goods set sort=%s,number=%s,uprice=%s where gid=%s",[product[0],product[1],product[2],pid])
+            db.executeUpdate("update goods set sort=%s,number=%s,uprice=%s,location=%s where gid=%s",[product[0],product[1],product[2],product[3],pid])
             return redirect(url_for('product'))
 
 # 函数showEcharts
@@ -197,15 +205,27 @@ def update(pid):
 def showEcharts():
     db = MhDatabases()
     #从数据库中查询数据---生成Json格式
-    result=db.executeQuery("select name,sum(number) from pcr group by name ")
-
-    list =[]
+    result=db.executeQuery("select sort,sum(cast(total as decimal(18,1))) from pcr group by sort ")
+    sorts=[]
+    for i in result:
+        sorts.append(i[0])
+    list1=[]
+    for i in sorts:
+        r=db.executeQuery("select name,sum(number) from pcr where sort=%s group by name ",[i])
+        allgoods=[]
+        for j in r:
+            goods={}
+            goods["name"]=j[0]
+            goods["number"]=int(j[1])
+            allgoods.append(goods)
+        list1.append(allgoods)
+    list2 =[]
     for i in result:
         dict ={}
-        dict["name"]=i[0]
-        dict["total"]=int(i[1])
-        list.append(dict)
-    res = {"result":list}
+        dict["sort"]=i[0]
+        dict["total"]=float(i[1])
+        list2.append(dict)
+    res = {"result":list2,"goodsresult":list1}
     content = json.dumps(res)
     return content
 
@@ -308,7 +328,7 @@ def allorders():
                         a[column[2]] = int(result[i][2])
                         a[column[1]] = result[i][3]
                         a[column[4]] = "http://139.217.130.233/"+result[i][4]
-                        totalprice[t]+=float(result[i][2])*result[i][3]
+                        totalprice[t]+=int(result[i][2])*result[i][3]
                         total.append(a)
             total2.append(total)
             total=[]
@@ -650,6 +670,57 @@ def updatemine():
     else:
         res="修改成功"
     return json.dumps(res)
+
+# 函数sortchart
+# 作用：微信小程序图表路由，获取用户发送的id，按种类发送总金额数据给小程序
+# 作者：王明
+# 完成时间：2019/09/4
+@app.route('/sortchart',methods=['GET','POST'])
+def sortchart():
+    db = MhDatabases()
+    # 获取微信小程序端传来的id
+    id = str(json.loads(request.values.get("id")))
+    #从数据库中查询数据---生成Json格式
+    result = db.executeQuery(
+        "select sort,sum(cast(total as decimal(18,1))) from pcr where optype=10 and buyerid=%s and str_to_date(time,'%%Y/%%m/%%d %%H:%%i:%%s')>date_format(curdate(),'%%Y/%%m/01 00:00:00') group by sort",[id])
+
+    ress =[]
+    totalprice=0;
+    for i in result:
+        dict ={}
+        dict["sort"]=i[0]
+        dict["total"]=float(i[1])
+        totalprice+=float(i[1])
+        ress.append(dict)
+
+    res={"result":ress,"totalprice":totalprice}
+    content = json.dumps(res)
+    return content
+
+# 函数searchgoods
+# 作用：微信小程序查询商品路由，支持模糊搜索
+# 作者：王明
+# 完成时间：2019/09/4
+@app.route('/searchgoods',methods=['GET','POST'])
+def searchgoods():
+    db = MhDatabases()
+    search= str(json.loads(request.values.get("search")))
+    result=db.executeQuery("select * from goods where name like '%%%s%%'",[search])
+    res=[]
+    if len(result)!=0:
+        for i in result:
+            dict = {}
+            dict['gid'] = result[0][0]
+            dict['name'] = result[0][1]
+            dict['image'] = "http://139.217.130.233/" + result[0][2]
+            dict['uprice'] = result[0][5]
+            res.append(dict)
+        return json.dumps(res)
+    else:
+        res="空"
+        return json.dumps(res)
+
+
 
 if __name__ == '__main__':
     app.run(ssl_context='adhoc')

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5c989457-7b58-4f3e-a076-fef5bd1fb7ff" name="Default Changelist" comment="" />
+    <list default="true" id="5c989457-7b58-4f3e-a076-fef5bd1fb7ff" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/macrohardweb/static/js.js" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,8 +206,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.mhitemCF" />
         <item itemvalue="Python.test2" />
+        <item itemvalue="Python.mhitemCF" />
         <item itemvalue="Python.mhHot" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.ItemCF" />
@@ -237,7 +239,12 @@
       <workItem from="1567121906610" duration="13233000" />
       <workItem from="1567318096455" duration="10534000" />
       <workItem from="1567335710210" duration="3209000" />
-      <workItem from="1567385074516" duration="8133000" />
+      <workItem from="1567385074516" duration="19366000" />
+      <workItem from="1567472904636" duration="13984000" />
+      <workItem from="1567502857772" duration="645000" />
+      <workItem from="1567559900369" duration="10410000" />
+      <workItem from="1567583580797" duration="14083000" />
+      <workItem from="1567606263144" duration="1232000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <created>1566872205319</created>
@@ -277,12 +284,12 @@
     <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/macrohardweb$mhitemCF.coverage" NAME="mhitemCF Coverage Results" MODIFIED="1567390640969" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/macrohardweb$mhitemCF.coverage" NAME="mhitemCF Coverage Results" MODIFIED="1567501860892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/macrohardweb$test.coverage" NAME="test Coverage Results" MODIFIED="1566913055481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/macrohardweb$untitled5.coverage" NAME="untitled5 Coverage Results" MODIFIED="1567392412689" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/macrohardweb$mhHot.coverage" NAME="mhHot Coverage Results" MODIFIED="1567388825295" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/macrohardweb$untitled5.coverage" NAME="untitled5 Coverage Results" MODIFIED="1567607508105" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/macrohardweb$mhHot.coverage" NAME="mhHot Coverage Results" MODIFIED="1567494932997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/untitled5$untitled5.coverage" NAME="untitled5 Coverage Results" MODIFIED="1566527063727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/macrohardweb$ItemCF.coverage" NAME="ItemCF Coverage Results" MODIFIED="1566784291644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/macrohardweb$test2.coverage" NAME="test2 Coverage Results" MODIFIED="1567390525644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/macrohardweb$test2.coverage" NAME="test2 Coverage Results" MODIFIED="1567607422347" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

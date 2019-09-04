@@ -30,10 +30,10 @@
         <div class="col-lg-2 col-6 p-3 w-75"></div>
         <div class="col-lg-2 col-6 p-3 w-75"></div>
         <div class="col-lg-2 col-6 p-3 w-75"></div>
-        <div class="col-lg-2 col-6 p-3 w-75"><input class="btn align-items-center justify-content-center d-flex btn-lg btn-primary" id="btnupdate" type="button" value="保存" /></div>
+        <div class="col-lg-2 col-6 p-3 w-75"><input class="btn align-items-center justify-content-center d-flex btn-lg btn-primary" id="btnupdate" type="button" value="保存" onclick="update()"/></div>
         <div class="col-lg-2 col-6 p-3">
           <div class="row">
-            <div class="col-md-12"><input class="btn align-items-center justify-content-center d-flex btn-lg btn-primary" id="btndelete" type="button" value="删除商品" /></div>
+            <div class="col-md-12"><input class="btn align-items-center justify-content-center d-flex btn-lg btn-primary" id="btndelete" type="button" value="删除商品" onclick="deletegoods()"/></div>
           </div>
         </div>
       </div>
@@ -93,7 +93,7 @@
 
                       </td>
                     </tr>
-                    </form>
+
                     <tr>
                       <td class="table-dark text-center">生产日期</td>
                       <td>
@@ -118,6 +118,7 @@
 
                       </td>
                     </tr>
+                    </form>
                     <tr>
                       <td class="table-dark text-center">图片</td>
                       <td class="p-5">
@@ -133,8 +134,50 @@
       </div>
     </div>
   </div>
+  <script>
+     function update() {
+            var reg1=/^[1-9]\d*$|^0$/;
+            var reg2=/^\d+(\.\d+)?$/;
+            var reg3=/[a-z]+[1-9]*$/;
+            var ptype=$("input[name='type']").val();
+            var pnumber=$("input[name='number']").val();
+            var pprice=$("input[name='price']").val();
+            var location=$("input[name='location']").val();
+            if(ptype==''||ptype==undefined||ptype==null){
+                alert("请输入商品种类");
+            }
+            else if(pnumber==''||pnumber==undefined||pnumber==null){
+                alert("请输入商品库存数量");
+            }
+            else if( pprice==''||pprice==undefined||pprice==null){
+                alert("请输入商品单价");
+            }
+            else if( location==''||location==undefined||location==null){
+                alert("请输入商品货架位置");
+            }
+            else if(!reg1.test(pnumber)){
+                alert("库存请输入整数");
+            }
+            else if(!reg2.test(pprice)){
+                alert("单价请输入数字");
+            }
+            else if(!reg3.test(location)){
+                alert("请输入正确的货架位置");
+            }
+            else{
+                $('#updatefrm').submit();
+                alert("修改成功");
+            }
+        }
+    function deletegoods() {
+            var msg="确定要删除吗？";
+            if(confirm(msg)==true) {
+                $('#deletefrm').submit();
+                alert("删除成功");
+            }
+    }
+  </script>
   <script src="../static/jquery.js"></script>
-  <script src="../static/js.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
