@@ -146,6 +146,7 @@
             var pdateofbad=$("input[name='dateofbad']").val();
             var location=$("input[name='location']").val();
             var file=$("#myFile").val();
+          
             if(proID==''||proID=='undefined'||proID==null){
                 alert("请输入商品ID");
             }
@@ -181,6 +182,9 @@
             }
             else if(pdateofbad==''||pdateofbad==undefined||pdateofbad==null){
                 alert("请输入商品保质日期");
+            }
+            else if(pdateofproduce>pdateofbad){
+                alert("保质日期需要大于生产日期")
             }
             else if(location==''||location==undefined||location==null){
                 alert("请输入商品货架位置");
