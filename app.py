@@ -699,14 +699,24 @@ def sortchart():
     result = db.executeQuery(
         "select sort,sum(cast(total as decimal(18,1))) from pcr where optype=10 and buyerid=%s and str_to_date(time,'%%Y/%%m/%%d %%H:%%i:%%s')>date_format(curdate(),'%%Y/%%m/01 00:00:00') group by sort",[id])
 
+    result2=db.executeQuery("select sort from goods group by sort")
+    r=[]
+    for i in result:
+        r.append(i[0])
     ress =[]
     totalprice=0;
-    for i in result:
-        dict ={}
-        dict["sort"]=i[0]
-        dict["total"]=float(i[1])
-        totalprice+=float(i[1])
-        ress.append(dict)
+    for i in range(0,len(result2)):
+        if result2[i][0] in r:
+            dict ={}
+            dict["sort"]=result[i][0]
+            dict["total"]=float(result[i][1])
+            totalprice+=float(result[i][1])
+            ress.append(dict)
+        else:
+            dict = {}
+            dict["sort"] = result2[i][0]
+            dict["total"] =0
+            ress.append(dict)
     t=round(totalprice,2)
     res={"result":ress,"totalprice":t}
     content = json.dumps(res)
