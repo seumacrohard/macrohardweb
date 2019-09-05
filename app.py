@@ -692,8 +692,8 @@ def sortchart():
         dict["total"]=float(i[1])
         totalprice+=float(i[1])
         ress.append(dict)
-    print(totalprice)
-    res={"result":ress,"totalprice":totalprice}
+    t=round(totalprice,2)
+    res={"result":ress,"totalprice":t}
     content = json.dumps(res)
     return content
 
@@ -710,10 +710,10 @@ def searchgoods():
     if len(result)!=0:
         for i in result:
             dict = {}
-            dict['gid'] = result[0][0]
-            dict['name'] = result[0][1]
-            dict['image'] = "http://139.217.130.233/" + result[0][2]
-            dict['uprice'] = result[0][5]
+            dict['gid'] = i[0]
+            dict['name'] = i[1]
+            dict['image'] = "http://139.217.130.233/" + i[2]
+            dict['uprice'] = i[5]
             res.append(dict)
         return json.dumps(res)
     else:
