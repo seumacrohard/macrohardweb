@@ -12,17 +12,17 @@
   <div class="py-5 h-100" style="background-image: url('https://static.pingendo.com/cover-bubble-dark.svg'); background-position: right bottom; background-size: cover; background-repeat: repeat; background-attachment: fixed;">
     <div class="container">
       <div class="row">
-        <div class="col-md-12"><a class="btn btn-primary" href="login"><i class="fa fa-user fa-fw"></i>登出</a></div>
+        <div class="col-md-12"><a class="btn btn-primary" style="color: white;font-weight: bold;" href="login"><i class="fa fa-user fa-fw"></i>登出</a></div>
       </div>
       <div class="row">
         <div class="mx-auto col-md-8 text-center">
-          <h1>智简销售管理</h1>
+          <h1 style="font-weight: bold;">智简销售管理</h1>
         </div>
       </div>
       <div class="row">
-        <div class="col-lg-6 col-6 p-3"><a class="btn btn-secondary btn-lg align-items-center justify-content-center d-flex" href="product">商品管理</a></div>
+        <div class="col-lg-6 col-6 p-3"><a class="btn btn-secondary btn-lg align-items-center justify-content-center d-flex" style="color: white;font-weight: bold;" href="product">商品管理</a></div>
         <div class="col-lg-6 col-6 p-3">
-          <a class="btn btn-secondary btn-lg align-items-center justify-content-center d-flex" href="billList">账单管理</a>
+          <a class="btn btn-secondary btn-lg align-items-center justify-content-center d-flex" style="color: white;font-weight: bold;" href="billList">账单管理</a>
         </div>
       </div>
         <div class="row">
@@ -30,15 +30,15 @@
           <form class="form-inline" id="frm" method="post">
             <div class="input-group">
               <input type="text" class="form-control" name="proid">
-              <div class="input-group-append"><button class="btn btn-primary" type="button" onclick="document.getElementById('frm').submit()">查询</button></div>
+              <div class="input-group-append"><button class="btn btn-primary" type="button" style="color: white;font-weight: bold;" onclick="document.getElementById('frm').submit()">查询</button></div>
             </div>
           </form>
             <form id="datefrm" method="post">
                 <input type="hidden" id="outofdate" name="outofdate" value="search">
             </form>
-            <div class="col-6 col-lg-2 p-3"><a class="btn btn-primary"  onclick="document.getElementById('datefrm').submit()">查询过期商品</a></div>
+            <div class="col-6 col-lg-2 p-3"><a class="btn btn-primary" style="color: white;font-weight: bold;" onclick="document.getElementById('datefrm').submit()">查询过期商品</a></div>
 
-            <div class="col-6 col-lg-2 p-3"><a class="btn btn-primary"  href="add">添加商品信息</a></div>
+            <div class="col-6 col-lg-2 p-3"><a class="btn btn-primary" style="color: white;font-weight: bold;"  href="add">添加商品信息</a></div>
         </div>
       </div>
     <div class="container">
@@ -68,15 +68,15 @@
                     <tr>
                         <form id={{ i[0] }} name="myfrm" method="post">
                             <td><img src={{ i[2] }} id="myImg"  style="width: 70px;height:70px ;" /></td>
-                            <td>{{ i[0] }}</td><input type="hidden" name="pid" value={{ i[0] }}></td>
-                            <td>{{ i[1] }}</td>
-                            <td>{{ i[3] }}</td>
-                            <td>{{ i[4] }}</td>
-                            <td>{{ i[5] }}</td>
-                            <td>{{ i[6] }}</td>
-                            <td>{{ i[7] }}</td>
-                            <td>{{ i[8] }}</td>
-                            <td ><a class="btn btn-primary" onclick="document.getElementById({{ i[0] }}).submit()">修改/查看</a></td>
+                            <td><strong>{{ i[0] }}</strong></td><input type="hidden" name="pid" value={{ i[0] }}></td>
+                            <td><strong>{{ i[1] }}</strong></td>
+                            <td><strong>{{ i[3] }}</strong></td>
+                            <td><strong>{{ i[4] }}</strong></td>
+                            <td><strong>{{ i[5] }}</strong></td>
+                            <td><strong>{{ i[6] }}</strong></td>
+                            <td><strong>{{ i[7] }}</strong></td>
+                            <td><strong>{{ i[8] }}</strong></td>
+                            <td ><a class="btn btn-primary" style="font-weight: bold;" onclick="document.getElementById({{ i[0] }}).submit()">修改/查看</a></td>
                         </form>
                     </tr>
                 {% endfor %}

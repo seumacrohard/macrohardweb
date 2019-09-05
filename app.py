@@ -154,7 +154,8 @@ def add():
         img=request.files.get("myFile")
         fname=img.filename
         filepath="./static/img/"+fname
-        img.save(os.path.join("./static/img/",fname)) # 保存web前端发送的图片到本地
+        # img.save("C:/macrohardweb/static/img/" + fname)
+        img.save("./static/img/"+fname) # 保存web前端发送的图片到本地
         product=[]
         product.append(request.form.get("productId"))
         product.append(request.form.get("productName"))
