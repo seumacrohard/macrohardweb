@@ -47,7 +47,6 @@ def login():
         name = request.form.get("username")
         pwd = request.form.get("password")
         session['user_id'] = name
-        session.setm
         print("username:", name)
         print("password:", pwd)
 
@@ -159,7 +158,8 @@ def add():
         # 查询数据库中是否已存在该商品，如果不存在则向数据库添加商品信息
         result1 = db.executeQuery("select * from goods where gid=%s", [product[0]])
         result2 = db.executeQuery("select * from goods where name=%s",[product[1]])
-        if len(result1) == 0 and len(result2) == 0:
+        result3 = db.executeQuery("select * from goods where image=%s",[product[2]])
+        if len(result1) == 0 and len(result2) == 0 and len(result3)==0:
             result = db.executeUpdate("insert into goods values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",product)
         else:
             result = 0
