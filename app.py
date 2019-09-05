@@ -692,7 +692,7 @@ def sortchart():
         dict["total"]=float(i[1])
         totalprice+=float(i[1])
         ress.append(dict)
-
+    print(totalprice)
     res={"result":ress,"totalprice":totalprice}
     content = json.dumps(res)
     return content
@@ -705,7 +705,7 @@ def sortchart():
 def searchgoods():
     db = MhDatabases()
     search= str(json.loads(request.values.get("search")))
-    result=db.executeQuery("select * from goods where name like '%%%s%%'",[search])
+    result=db.executeQuery("select * from goods where name like '%%%%%s%%%%'"%(search))
     res=[]
     if len(result)!=0:
         for i in result:
