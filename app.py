@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, j
 from MhDatabses import MhDatabases
 from mhHot import mhHot
 from mhitemCF import  mhitemCF
+import time
 
 app = Flask(__name__)
 
@@ -114,6 +115,17 @@ def product():
         print("proID",proID)
         pid=request.form.get("pid") # 获取web端发送的需要修改/查看的商品ID
         print("pid",pid)
+        outofdate = request.form.get("outofdate")  # 获取web端发送的需要修改/查看的商品ID
+
+        if outofdate=="search":
+            todaydate=time.strftime("%Y-%m-%d")
+            res=db.executeQuery("select * from goods")
+            result=[]
+            for i in res:
+                if todaydate>i[7]:
+                    result.append(i)
+            return render_template("product.html", result=result)
+
         if proID:
             result1 = db.executeQuery("select * from goods where gid=%s",[proID]) # 从数据库获取查询的商品信息并返回
             result2 = db.executeQuery("select * from goods where name=%s", [proID])
@@ -332,7 +344,9 @@ def allorders():
                         total.append(a)
             total2.append(total)
             total=[]
+            totalprice[t]=round(totalprice[t],2)
         res=[]
+
         for i in range(0,len(total2)):
             order={"orders":total2[i],"time":timess[i],"totalprice":totalprice[i]}
             res.append(order)
