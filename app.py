@@ -328,7 +328,7 @@ def allorders():
                         a[column[2]] = int(result[i][2])
                         a[column[1]] = result[i][3]
                         a[column[4]] = "http://139.217.130.233/"+result[i][4]
-                        totalprice[t]+=int(result[i][2])*result[i][3]
+                        totalprice[t]+=float(result[i][2])*result[i][3]
                         total.append(a)
             total2.append(total)
             total=[]
