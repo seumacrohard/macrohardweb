@@ -1,10 +1,11 @@
+import time
 from functools import wraps
-import os
+
 from flask import Flask, render_template, request, session, redirect, url_for, json
+
 from MhDatabses import MhDatabases
 from mhHot import mhHot
-from mhitemCF import  mhitemCF
-import time
+from mhitemCF import mhitemCF
 
 app = Flask(__name__)
 
@@ -712,17 +713,17 @@ def sortchart():
         r.append(i[0])
     ress =[]
     totalprice=0;
-    for i in range(0,len(result2)):
-        if result2[i][0] in r:
-            dict ={}
-            dict["sort"]=result[i][0]
-            dict["total"]=float(result[i][1])
-            totalprice+=float(result[i][1])
-            ress.append(dict)
-        else:
+    for i in result:
+        dict = {}
+        dict["sort"] = i[0]
+        dict["total"] = float(i[1])
+        totalprice += float(i[1])
+        ress.append(dict)
+    for i in range(0, len(result2)):
+        if result2[i][0] not in r:
             dict = {}
             dict["sort"] = result2[i][0]
-            dict["total"] =0
+            dict["total"] = 0
             ress.append(dict)
     t=round(totalprice,2)
     res={"result":ress,"totalprice":t}
