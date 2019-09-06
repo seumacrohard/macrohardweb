@@ -33,6 +33,13 @@ def login_required(func):
 
     return inner
 
+# 函数start
+# 作用：管理员最开始的界面，介绍团队和项目
+# 作者：王明
+# 完成时间：2019/09/6
+@app.route('/')
+def start():
+    return render_template("start.html")
 
 # 函数login
 # 作用：管理员登录路由函数，验证管理员账户密码是否正确
