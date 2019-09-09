@@ -162,8 +162,7 @@ def add():
         img=request.files.get("myFile")
         fname=img.filename
         filepath="./static/img/"+fname
-        # img.save("C:/macrohardweb/static/img/" + fname)
-        img.save("./static/img/"+fname) # 保存web前端发送的图片到本地
+        img.save("C:/macrohardweb/static/img/" + fname)
         product=[]
         product.append(request.form.get("productId"))
         product.append(request.form.get("productName"))
@@ -458,6 +457,7 @@ def shoppingcart():
 
 
 
+
 # 函数cartsettle
 # 作用：微信小程序用户购物车结算路由，获取用户发送的id，订单时间，结算商品数组，修改数据库相关信息
 # 作者：王明
@@ -553,6 +553,26 @@ def cartadd():
             res="添加失败"
     return json.dumps(res)
 
+#函数cartchange
+#作用：微信小程序用户增减购物车商品数量路由，获取用户id,商品id,此商品购物车中数量id,返回是否数据库修改成功
+#作者：陶一丁
+#完成时间：2019/9/9
+@app.route('/cartchange',methods=['GET','POST'])
+def cartchange():
+    db = MhDatabases()
+
+    id = str(json.loads(request.values.get("id")))
+    gid = str(json.loads(request.values.get("gid")))
+    quantity = int(json.loads(request.values.get("quantity")))
+
+    r = db.executeUpdate("update pcr set number=%s where gid=%s and buyerid=%s and optype=5",[quantity,gid,id])
+
+    if r == 1:
+        res ="修改失敗"
+    else:
+        res = "修改成功"
+
+    return json.dumps(res)
 
 # 函数goodsdetail
 # 作用：微信小程序用户商品详情路由，获取用户发送的商品id，返回数据库中的商品详细信息
