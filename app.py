@@ -288,6 +288,7 @@ def userregister():
 # 作用：微信小程序用户登录路由，获取用户登录信息，判断是否存在，返回登录结果
 # 作者：王明
 # 完成时间：2019/08/28
+# 最后更新时间：2019/09/10 陶一丁
 @app.route('/userlogin',methods=['GET','POST'])
 def userlogin():
     db = MhDatabases()
@@ -306,9 +307,12 @@ def userlogin():
         # 如果匹配返回登录成功
             res='登录成功'
             return json.dumps(res)
+        else:
+            res='密码错误'
+            return json.dumps(res)
     else:
-        # 如果不匹配返回账号或密码错误
-        res='账号或密码错误'
+        # 如果不匹配返回账号未注册
+        res='账号未注册'
         return json.dumps(res)
 
 
